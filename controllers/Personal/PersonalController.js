@@ -14,7 +14,8 @@ exports.findAll = (req, res) => {
 }
 
 exports.findAllNodes = async (req, res) => {
-    Model.find().populate('entity').populate('post').then(data => {
+    console.log(req.query);
+    Model.find(req.query).populate('entity').populate('post').then(data => {
             res.send(data);
         })
         .catch(err => {
@@ -23,6 +24,18 @@ exports.findAllNodes = async (req, res) => {
             });
         });
 }
+
+// exports.filter = async (req, res) => {
+//     console.log(req.params);
+//     // Model.find().populate('entity').populate('post').then(data => {
+//     //         res.send(data);
+//     //     })
+//     //     .catch(err => {
+//     //         res.status(500).send({
+//     //             message: err.message || "Some error occurred"
+//     //         });
+//     //     });
+// }
 
 exports.findById = (req, res) => {
     try {

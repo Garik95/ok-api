@@ -44,6 +44,26 @@ exports.delete = (req, res) => {
     }
 }
 
+exports.update = (req, res) => {
+    try {
+        var item = req.body;
+        console.log(item);
+        if (mongoose.Types.ObjectId.isValid(item._id)) {
+            Model.updateOne({ _id: item._id }, item)
+                .then(data => {
+                    res.send(data);
+                })
+                .catch(err => {
+                    res.status(500).send({
+                        message: err.message || "Some error occurred"
+                    });
+                });
+        }
+    } catch (err) {
+        res.send(err)
+    }
+}
+
 exports.findAllNodes = async (req, res) => {
     Model.find().populate('region').then(data => {
         res.send(data);

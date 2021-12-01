@@ -171,7 +171,7 @@ module.exports = (mongoose) => {
             required: true
         },
         STATUS_CODE: {
-            type: String,
+            type: Number,
             required: true
         },
         EDUCATION: {
@@ -190,6 +190,10 @@ module.exports = (mongoose) => {
         toObject: {
             virtuals: true
         } // So `console.log()` and other functions that use `toObject()` include virtuals
+    });
+
+    PersonalSchema.virtual('fullname').get(function () {
+        return `${this.FAMILY} ${this.FIRST_NAME} ${this.PATRONYMIC}`;
     });
 
     PersonalSchema.virtual('branch', {
