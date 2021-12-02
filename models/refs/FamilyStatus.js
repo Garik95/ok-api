@@ -1,7 +1,7 @@
 module.exports = (mongoose, pre) => {
     return mongoose.model(pre + 'FamilyStatus', new mongoose.Schema({
         FAMILY_STATUS_CODE: {
-            type: String,
+            type: Number,
             required: true
         },
         GENDER_CODE: {
