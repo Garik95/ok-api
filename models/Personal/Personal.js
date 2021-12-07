@@ -182,7 +182,8 @@ module.exports = (mongoose) => {
         },
         RELATION: {
             type: mongoose.ObjectId,
-        }
+        },
+        CARDID: Number
     }, {
         toJSON: {
             virtuals: true
