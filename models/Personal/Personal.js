@@ -1,3 +1,5 @@
+const { PhoneModel, PhoneSchema } = require('./Phone');
+
 module.exports = (mongoose) => {
     const PersonalSchema = mongoose.Schema({
         FIRST_NAME: {
@@ -183,7 +185,7 @@ module.exports = (mongoose) => {
         RELATION: {
             type: mongoose.ObjectId,
         },
-        CARDID: Number
+        CARDID: Number,
     }, {
         toJSON: {
             virtuals: true
@@ -328,6 +330,12 @@ module.exports = (mongoose) => {
         localField: 'RELATION',
         foreignField: '_id',
         justOne: true
+    });
+    
+    PersonalSchema.virtual('phone', {
+        ref: 'Phone',
+        localField: '_id',
+        foreignField: 'PERSONAL_ID',
     });
 
     // WORKINGRATE

@@ -47,6 +47,8 @@ db.PerEmployment = require('./Personal/Employment')(mongoose);
 db.PerFamily = require('./Personal/Family')(mongoose);
 db.PerLang = require('./Personal/Langs')(mongoose);
 db.PerPrize = require('./Personal/Prize')(mongoose);
+const { PhoneModel } = require('./Personal/Phone'); 
+db.Phone = PhoneModel;
 
 db.Branch = require('./Branch')(mongoose);
 db.DepType = require('./DepType')(mongoose);

@@ -28,6 +28,7 @@ require('./routes/v1/Personal/EmploymentRoute')(app)
 require('./routes/v1/Personal/FamilyRoute')(app)
 require('./routes/v1/Personal/LangsRoute')(app)
 require('./routes/v1/Personal/PrizeRoute')(app)
+require('./routes/v1/Personal/PhoneRoute')(app)
 
 
 // require('./routes/v1')(app);
