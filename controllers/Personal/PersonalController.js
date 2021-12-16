@@ -40,7 +40,7 @@ exports.findByDepartments = async (req, res) => {
                 $in: deps
             },
             BRANCH: req.query.BRANCH
-        }).populate('post').then(data => {
+        }).populate('post').populate('phone').then(data => {
             res.send(data)
         })
         .catch(err => {
