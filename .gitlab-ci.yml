@@ -13,4 +13,4 @@ deploy:
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
   script:
-    - ssh -o StrictHostKeyChecking=no root2@10.10.12.67 "cd /home/root2/projects/ok && rm -rf hr-api/ && git clone http://10.10.12.67:8929/bank/hr/hr-api.git && cd hr-api/ && npm i && PORT=6677 pm2 start index.js --name hr-api"
+    - ssh -o StrictHostKeyChecking=no root2@10.10.12.67 "cd /home/root2/projects/ok && rm -rf hr-api/ && git clone http://10.10.12.67:8929/bank/hr/hr-api.git && cd hr-api/ && npm i && pm2 delete hr-api && PORT=6677 pm2 start index.js --name hr-api"
