@@ -1,0 +1,16 @@
+deploy:
+  #image: alpine
+  before_script:
+    - export HTTP_PROXY="http://10.10.12.38:3128"
+    - export HTTPS_PROXY="http://10.10.12.38:3128"
+    - export NO_PROXY=".noproxy.com,.noproxy2.com"
+    - env | grep PROXY
+    - apk add openssh-client
+    - eval $(ssh-agent -s)
+    - env | grep PROXY
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    #- echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+  script:
+    - ssh -o StrictHostKeyChecking=no root2@10.10.12.67 "cd /home/root2/projects/ok && rm -rf hr-api/ && git clone http://10.10.12.67:8929/bank/hr/hr-api.git && cd hr-api/ && npm i && PORT=6677 pm2 start index.js --name hr-api"
