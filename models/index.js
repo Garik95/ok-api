@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const dbconf = require('../dbconfig');
 
-mongoose.set('debug', true);
+// mongoose.set('debug', true);
 const db = mongoose
     .connect(dbconf.url)
     .then(() => {

@@ -6,6 +6,8 @@ module.exports = (app) => {
     router.get('/', Model.findAll);
     // router.get('/filter', Model.filter);
     router.get('/all', Model.findAllNodes);
+    router.get('/department', Model.findByDepartments);
+    router.get('/search', Model.findPersonal);
     router.get('/card', Model.findEmptyCardId);
     router.get('/card/:id', Model.findCards);
     // return specific document by ID

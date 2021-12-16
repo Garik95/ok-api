@@ -1,3 +1,4 @@
+const Personal = require('./Personal/Personal');
 module.exports = (mongoose) => {
     const EntitySchema = new mongoose.Schema({
         ID: {
@@ -35,6 +36,12 @@ module.exports = (mongoose) => {
         toObject: {
             virtuals: true
         } // So `console.log()` and other functions that use `toObject()` include virtuals 
+    });
+
+    EntitySchema.virtual('per', {
+        ref:'Personal',
+        localField: 'ID',
+        foreignField: 'DEPARTMENT_CODE'
     });
 
     EntitySchema.virtual('region', {

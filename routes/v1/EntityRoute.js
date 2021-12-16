@@ -4,6 +4,9 @@ module.exports = (app) => {
     var router = require("express").Router();
     // return all documents
     router.get('/', Model.findAll);
+    router.get('/phonebook', Model.findForPhonebook);
+    router.get('/nested', Model.findNested);
+    router.get('/child', Model.findChild);
     router.get('/region', Model.findAll);
     router.get('/all', Model.findAllNodes);
     // return specific document by ID
