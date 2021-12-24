@@ -1,4 +1,5 @@
 const { PhoneModel, PhoneSchema } = require('./Phone');
+const moment = require('moment');
 
 module.exports = (mongoose) => {
     const PersonalSchema = mongoose.Schema({
@@ -194,9 +195,17 @@ module.exports = (mongoose) => {
             virtuals: true
         } // So `console.log()` and other functions that use `toObject()` include virtuals
     });
-
+    
     PersonalSchema.virtual('fullname').get(function () {
         return `${this.FAMILY} ${this.FIRST_NAME} ${this.PATRONYMIC}`;
+    });
+    
+    PersonalSchema.virtual('month').get(function () {
+        return moment(this.BIRTHDAY).month();
+    });
+    
+    PersonalSchema.virtual('day').get(function () {
+        return moment(this.BIRTHDAY).date();
     });
 
     PersonalSchema.virtual('branch', {

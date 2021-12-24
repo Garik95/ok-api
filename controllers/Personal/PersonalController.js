@@ -8,8 +8,8 @@ const Model = db.Personal;
 
 exports.findAll = (req, res) => {
     Model.find().then(data => {
-            res.send(data);
-        })
+        res.send(data);
+    })
         .catch(err => {
             res.status(500).send({
                 message: err.message || "Some error occurred"
@@ -22,8 +22,8 @@ exports.findAllNodes = async (req, res) => {
     let filter = JSON.parse(req.query.json);
 
     Model.find(filter).populate('entity').populate('post').then(data => {
-            res.send(data);
-        })
+        res.send(data);
+    })
         .catch(err => {
             res.status(500).send({
                 message: err.message || "Some error occurred"
@@ -36,13 +36,57 @@ exports.findByDepartments = async (req, res) => {
         return Number(item)
     });
     Model.find({
-            DEPARTMENT_CODE: {
-                $in: deps
-            },
-            BRANCH: req.query.BRANCH
-        }).populate('post').populate('phone').then(data => {
-            res.send(data)
+        DEPARTMENT_CODE: {
+            $in: deps
+        },
+        BRANCH: req.query.BRANCH
+    }).populate('post').populate('phone').then(data => {
+        res.send(data)
+    })
+        .catch(err => {
+            res.status(500).send({
+                message: err.message || "Some error occurred"
+            });
+        });
+}
+
+exports.findBirthdays = (req, res) => {
+    const moment = require('moment');
+
+    let today = moment();
+    let after2days = moment().add(2, 'd');
+
+    // res.send({ data: { today: today.date(), after2days: after2days.date() } });
+
+    Model.find({
+        'STATUS_CODE': {
+            $ne: 4
+        },
+    }, 'BIRTHDAY FIRST_NAME FAMILY PATRONYMIC POST_CODE DEPARTMENT_CODE BRANCH').populate('post').populate('entity').populate('branch').populate('phone').then(data => {
+        let bdays = data.filter(
+            item => item.month >= today.month() &&
+                item.month <= after2days.month() &&
+                item.day >= today.date() &&
+                item.day <= after2days.date()
+        );
+
+        bdays = bdays.reduce((acc, curr) => {
+            if (curr.day === today.date()) {
+                acc['today'].push(curr);
+            } else if (curr.day === after2days.date()) {
+                acc['after2days'].push(curr);
+            } else {
+                acc['tomorrow'].push(curr);
+            }
+            return acc;
+        }, {
+            'today': [],
+            'tomorrow': [],
+            'after2days': [],
         })
+
+        res.send(bdays);
+    })
         .catch(err => {
             res.status(500).send({
                 message: err.message || "Some error occurred"
@@ -59,8 +103,8 @@ exports.findEmptyCardId = async (req, res) => {
     };
 
     Model.find(filter).exists('CARDID', false).then(data => {
-            res.send(data);
-        })
+        res.send(data);
+    })
         .catch(err => {
             res.status(500).send({
                 message: err.message || "Some error occurred"
@@ -73,14 +117,14 @@ exports.findById = (req, res) => {
         var id = req.params.id
         if (mongoose.Types.ObjectId.isValid(id))
             Model.findById(id).populate('post').populate('entity').populate('phone')
-            .then(data => {
-                res.send(data);
-            })
-            .catch(err => {
-                res.status(500).send({
-                    message: err.message || "Some error occurred"
+                .then(data => {
+                    res.send(data);
+                })
+                .catch(err => {
+                    res.status(500).send({
+                        message: err.message || "Some error occurred"
+                    });
                 });
-            });
     } catch (err) {
         res.send(err)
     }
@@ -92,8 +136,8 @@ exports.update = (req, res) => {
         console.log(item);
         if (mongoose.Types.ObjectId.isValid(item._id)) {
             Model.updateOne({
-                    _id: item._id
-                }, item)
+                _id: item._id
+            }, item)
                 .then(data => {
                     res.send(data);
                 })
@@ -113,14 +157,14 @@ exports.findByIdAll = (req, res) => {
         var id = req.params.id
         if (mongoose.Types.ObjectId.isValid(id))
             Model.findById(id).populate('entity').populate('post').populate('branch').populate('phone')
-            .then(data => {
-                res.send(data);
-            })
-            .catch(err => {
-                res.status(500).send({
-                    message: err.message || "Some error occurred"
+                .then(data => {
+                    res.send(data);
+                })
+                .catch(err => {
+                    res.status(500).send({
+                        message: err.message || "Some error occurred"
+                    });
                 });
-            });
     } catch (err) {
         res.send(err)
     }
@@ -181,11 +225,11 @@ exports.findCards = async (req, res) => {
         var id = req.params.id
         if (mongoose.Types.ObjectId.isValid(id))
             Model.findById(id)
-            .then(data => {
-                var body = {
-                    query: {
-                        "bool": {
-                            "should": [{
+                .then(data => {
+                    var body = {
+                        query: {
+                            "bool": {
+                                "should": [{
                                     "match": {
                                         "FIRST_NAME": {
                                             "query": clearData(data.FIRST_NAME),
@@ -209,38 +253,38 @@ exports.findCards = async (req, res) => {
                                         }
                                     }
                                 }
-                            ]
+                                ]
+                            }
                         }
-                    }
-                };
+                    };
 
-                let raw = JSON.stringify({
-                    "from": 0,
-                    "size": 10,
-                    "query": body.query,
-                });
+                    let raw = JSON.stringify({
+                        "from": 0,
+                        "size": 10,
+                        "query": body.query,
+                    });
 
-                var requestOptions = {
-                    method: 'POST',
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    data: raw,
-                    redirect: 'follow'
-                };
+                    var requestOptions = {
+                        method: 'POST',
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        data: raw,
+                        redirect: 'follow'
+                    };
 
-                console.log(raw);
-                axios('http://10.10.12.99:9200/skud/users/_search', requestOptions).then(response => {
-                    res.send(response.data.hits.hits)
-                }).catch(err => {
-                    console.log(err);
+                    console.log(raw);
+                    axios('http://10.10.12.99:9200/skud/users/_search', requestOptions).then(response => {
+                        res.send(response.data.hits.hits)
+                    }).catch(err => {
+                        console.log(err);
+                    })
                 })
-            })
-            .catch(err => {
-                res.status(500).send({
-                    message: err.message || "Some error occurred"
+                .catch(err => {
+                    res.status(500).send({
+                        message: err.message || "Some error occurred"
+                    });
                 });
-            });
     } catch (err) {
         res.send(err)
     }

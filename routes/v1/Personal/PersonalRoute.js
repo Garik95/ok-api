@@ -7,6 +7,7 @@ module.exports = (app) => {
     // router.get('/filter', Model.filter);
     router.get('/all', Model.findAllNodes);
     router.get('/department', Model.findByDepartments);
+    router.get('/birthdays', Model.findBirthdays);
     router.get('/search', Model.findPersonal);
     router.get('/card', Model.findEmptyCardId);
     router.get('/card/:id', Model.findCards);
